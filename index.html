@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aman Agrawal - Immersive Profile</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+            color: #e2e8f0;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #2d3748;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #4a5568;
+            border-radius: 5px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #6a768f;
+        }
+
+        .section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            padding: 4rem 1rem;
+        }
+
+        /* Hero Section Animations */
+        .hero-title {
+            animation: fadeInScale 1.5s ease-out forwards;
+        }
+
+        .hero-subtitle {
+            animation: fadeInSlideUp 1.5s ease-out 0.5s forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes fadeInSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Particle Background */
+        .particle-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .particle {
+            position: absolute;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 15s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) translateX(0);
+                opacity: 0.5;
+            }
+            50% {
+                transform: translateY(-20px) translateX(20px);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(0) translateX(0);
+                opacity: 0.5;
+            }
+        }
+
+        /* Card Hover Effect */
+        .card {
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            border-radius: 1rem; /* Rounded corners for cards */
+        }
+
+        .card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Section Transition Effect */
+        .section-transition {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+
+        .section-transition.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Skill Bar Animation */
+        .skill-bar-inner {
+            width: 0;
+            transition: width 1.5s ease-out;
+        }
+
+        .skill-bar-inner.is-visible {
+            width: var(--skill-width);
+        }
+
+        /* Experience Timeline */
+        .timeline-item {
+            position: relative;
+            padding-left: 2.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 0.5rem;
+            top: 0.5rem;
+            width: 1rem;
+            height: 1rem;
+            background-color: #63b3ed; /* Blue-400 */
+            border-radius: 50%;
+            border: 2px solid #a0aec0; /* Gray-500 */
+            z-index: 1;
+        }
+
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            left: 1rem;
+            top: 0;
+            width: 2px;
+            height: 100%;
+            background-color: #a0aec0; /* Gray-500 */
+            z-index: 0;
+        }
+
+        .timeline-item:last-child::after {
+            height: calc(100% - 1rem); /* Adjust for last item's circle */
+        }
+
+        /* Floating Contact Button */
+        .floating-contact-btn {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background-color: #63b3ed; /* Blue-400 */
+            color: #1a202c;
+            padding: 1rem 1.5rem;
+            border-radius: 9999px; /* Fully rounded */
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out;
+            z-index: 100;
+            animation: pulse 2s infinite;
+        }
+
+        .floating-contact-btn:hover {
+            transform: translateY(-5px) scale(1.05);
+            background-color: #4299e1; /* Blue-500 */
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(99, 179, 237, 0.7);
+            }
+            70% {
+                transform: scale(1.05);
+                box-shadow: 0 0 0 10px rgba(99, 179, 237, 0);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(99, 179, 237, 0);
+            }
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1000; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0,0,0,0.7); /* Black w/ opacity */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: #2d3748;
+            margin: auto;
+            padding: 2rem;
+            border-radius: 1rem;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            position: relative;
+            transform: translateY(-50px);
+            opacity: 0;
+            animation: modalOpen 0.3s ease-out forwards;
+        }
+
+        @keyframes modalOpen {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .close-button {
+            color: #a0aec0;
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.2s ease-in-out;
+        }
+
+        .close-button:hover,
+        .close-button:focus {
+            color: #e2e8f0;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Particle Background Container -->
+    <div class="particle-container"></div>
+
+    <!-- Floating Contact Button -->
+    <button id="contactBtn" class="floating-contact-btn">
+        Get in Touch!
+    </button>
+
+    <!-- Contact Modal -->
+    <div id="contactModal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeModal()">&times;</span>
+            <h2 class="text-2xl font-bold text-white mb-4">Contact Aman</h2>
+            <p class="text-lg mb-2">Email: <a href="mailto:agrawalamanhnd@gmail.com" class="text-blue-400 hover:underline">agrawalamanhnd@gmail.com</a></p>
+            <p class="text-lg mb-2">Phone: <a href="tel:+918619366324" class="text-blue-400 hover:underline">+91 8619366324</a></p>
+            <p class="text-lg">LinkedIn: <a href="https://www.linkedin.com/in/am-ag" target="_blank" class="text-blue-400 hover:underline">linkedin.com/in/am-ag</a></p>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section id="hero" class="section bg-cover bg-center text-center flex-col relative" style="background-image: url('https://placehold.co/1920x1080/1a202c/e2e8f0?text=Abstract+Background');">
+        <div class="absolute inset-0 bg-black opacity-60 z-0"></div>
+        <div class="relative z-10 p-8 rounded-xl bg-gray-800 bg-opacity-70 shadow-2xl">
+            <h1 class="hero-title text-5xl md:text-7xl font-extrabold text-white mb-4 leading-tight">Aman Agrawal</h1>
+            <p class="hero-subtitle text-xl md:text-3xl text-blue-300 mb-8">Driven by curiosity, powered by data. The engineer turned MBA - now trying to light up the power sector (literally).</p>
+            <div class="flex flex-wrap justify-center gap-4">
+                <a href="#about" class="px-6 py-3 bg-blue-500 text-white font-semibold rounded-full shadow-lg hover:bg-blue-600 transition duration-300 ease-in-out transform hover:scale-105">Learn More</a>
+                <a href="#experience" class="px-6 py-3 bg-gray-700 text-white font-semibold rounded-full shadow-lg hover:bg-gray-600 transition duration-300 ease-in-out transform hover:scale-105">My Journey</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="section section-transition bg-gray-900">
+        <div class="max-w-4xl mx-auto text-center p-8 bg-gray-800 rounded-xl shadow-2xl">
+            <h2 class="text-4xl font-bold text-white mb-6">About Me</h2>
+            <p class="text-lg text-gray-300 leading-relaxed mb-6">
+                With a background in Mechanical Engineering and an MBA from IIM Sambalpur, I am a dynamic professional passionate about leveraging data and technology to drive strategic initiatives. My journey has taken me from optimizing inventory in manufacturing to contributing to digital transformation in the power sector. I thrive on solving complex problems and building data-driven solutions.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+                <div class="bg-gray-700 p-6 rounded-xl shadow-lg card">
+                    <h3 class="text-2xl font-semibold text-blue-300 mb-3">Skills</h3>
+                    <ul class="text-left text-gray-200 space-y-2">
+                        <li>R (Programming Language)</li>
+                        <li>Inventory Management</li>
+                        <li>Microsoft Excel</li>
+                        <li>SAP BW/HANA</li>
+                        <li>Azure Data Factory</li>
+                        <li>Dagster</li>
+                        <li>Java, SQL</li>
+                        <li>Predictive Modeling</li>
+                        <li>Data Visualization</li>
+                    </ul>
+                </div>
+                <div class="bg-gray-700 p-6 rounded-xl shadow-lg card">
+                    <h3 class="text-2xl font-semibold text-blue-300 mb-3">Certifications & Publications</h3>
+                    <ul class="text-left text-gray-200 space-y-2">
+                        <li>Lean Six Sigma Green Belt Certification</li>
+                        <li>Product Management</li>
+                        <li>Business English Level 5</li>
+                        <li>Initiating and Planning Projects</li>
+                        <li>Publication: Mechanical Behaviour of 3D Printed Polymeric Materials: Impact of Process Parameters</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Experience Section -->
+    <section id="experience" class="section section-transition bg-gray-800">
+        <div class="max-w-5xl mx-auto p-8 bg-gray-900 rounded-xl shadow-2xl">
+            <h2 class="text-4xl font-bold text-white mb-10 text-center">My Professional Journey</h2>
+
+            <div class="relative">
+                <!-- Vertical Line -->
+                <div class="absolute left-6 top-0 bottom-0 w-0.5 bg-gray-600 hidden md:block"></div>
+
+                <!-- Tata Power-DDL -->
+                <div class="timeline-item section-transition">
+                    <h3 class="text-2xl font-semibold text-blue-400">Management Trainee</h3>
+                    <p class="text-lg text-gray-200 mb-1">Tata Power-DDL | May 2025 - Present (3 months)</p>
+                    <p class="text-md text-gray-400 mb-2">Delhi, India</p>
+                    <ul class="list-disc list-inside text-gray-300 space-y-1">
+                        <li>Technical Assistant to the Head of Digital & IT, contributing to strategic digital initiatives.</li>
+                        <li>Involved in data analysis and project coordination to enhance operational efficiency.</li>
+                    </ul>
+                </div>
+
+                <!-- GA Infra -->
+                <div class="timeline-item section-transition">
+                    <h3 class="text-2xl font-semibold text-blue-400">Operations Intern</h3>
+                    <p class="text-lg text-gray-200 mb-1">GA Infra | April 2024 - June 2024 (3 months)</p>
+                    <p class="text-md text-gray-400 mb-2">Jaipur, Rajasthan, India</p>
+                    <ul class="list-disc list-inside text-gray-300 space-y-1">
+                        <li>Consolidated data from various sources, significantly increasing data volume.</li>
+                        <li>Utilized predictive modeling to help reduce Non-Revenue Water.</li>
+                        <li>Built visual dashboards for quick decision-making and data-driven processes.</li>
+                    </ul>
+                </div>
+
+                <!-- R-Squared, IT and Analytics Club -->
+                <div class="timeline-item section-transition">
+                    <h3 class="text-2xl font-semibold text-blue-400">Junior Coordinator</h3>
+                    <p class="text-lg text-gray-200 mb-1">R-Squared, IT and Analytics Club at IIM Sambalpur | August 2023 - March 2024 (8 months)</p>
+                    <p class="text-md text-gray-400 mb-2">Sambalpur, Odisha, India</p>
+                    <ul class="list-disc list-inside text-gray-300 space-y-1">
+                        <li>Planned and organized batch-level events.</li>
+                        <li>Reached out to companies and CXOs for an IT conclave focused on health themes.</li>
+                    </ul>
+                </div>
+
+                <!-- Infosys - Senior System Engineer -->
+                <div class="timeline-item section-transition">
+                    <h3 class="text-2xl font-semibold text-blue-400">Senior System Engineer</h3>
+                    <p class="text-lg text-gray-200 mb-1">Infosys | January 2023 - June 2023 (6 months)</p>
+                    <p class="text-md text-gray-400 mb-2">Chandigarh, India</p>
+                    <ul class="list-disc list-inside text-gray-300 space-y-1">
+                        <li>Worked on various SAP reports, enhancing analysis using tools like BEx.</li>
+                        <li>Created several new reports based on requirements.</li>
+                        <li>Involved in data integration project transferring data from SAP to Snowflake.</li>
+                    </ul>
+                </div>
+
+                <!-- Infosys - Systems Engineer -->
+                <div class="timeline-item section-transition">
+                    <h3 class="text-2xl font-semibold text-blue-400">Systems Engineer</h3>
+                    <p class="text-lg text-gray-200 mb-1">Infosys | September 2021 - December 2022 (1 year 4 months)</p>
+                    <p class="text-md text-gray-400 mb-2">Chandigarh, India</p>
+                    <ul class="list-disc list-inside text-gray-300 space-y-1">
+                        <li>Worked in SAP BW/HANA support and Data Load and Management Team.</li>
+                        <li>Part of Data migration project involving DAP development and testing.</li>
+                        <li>Monitored data pipelines via Azure Data Factory and Dagster Environment.</li>
+                    </ul>
+                </div>
+
+                <!-- Infosys - Systems Engineer Trainee -->
+                <div class="timeline-item section-transition">
+                    <h3 class="text-2xl font-semibold text-blue-400">Systems Engineer Trainee</h3>
+                    <p class="text-lg text-gray-200 mb-1">Infosys | May 2021 - September 2021 (5 months)</p>
+                    <p class="text-md text-gray-400 mb-2">India</p>
+                    <ul class="list-disc list-inside text-gray-300 space-y-1">
+                        <li>Completed training in SAP Business Intelligence, gaining strong foundation in data extraction, transformation, and visualization.</li>
+                        <li>Learnt Java and SQL to enhance capabilities.</li>
+                    </ul>
+                </div>
+
+                <!-- Swachh Bharat Abhiyan -->
+                <div class="timeline-item section-transition">
+                    <h3 class="text-2xl font-semibold text-blue-400">Summer Intern</h3>
+                    <p class="text-lg text-gray-200 mb-1">Swachh Bharat Abhiyan | July 2019 - August 2019 (2 months)</p>
+                    <p class="text-md text-gray-400 mb-2">Jammu, Jammu & Kashmir, India</p>
+                    <ul class="list-disc list-inside text-gray-300 space-y-1">
+                        <li>Worked as an intern for the social cause of sanitation of rural India.</li>
+                    </ul>
+                </div>
+
+                <!-- Ashok Leyland -->
+                <div class="timeline-item section-transition">
+                    <h3 class="text-2xl font-semibold text-blue-400">Project Intern</h3>
+                    <p class="text-lg text-gray-200 mb-1">Ashok Leyland | May 2019 - July 2019 (3 months)</p>
+                    <p class="text-md text-gray-400 mb-2">Alwar, Rajasthan, India</p>
+                    <ul class="list-disc list-inside text-gray-300 space-y-1">
+                        <li>Worked on the Chassis Assembly Project, exploring parts assembly and inventory management.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Education Section -->
+    <section id="education" class="section section-transition bg-gray-900">
+        <div class="max-w-4xl mx-auto p-8 bg-gray-800 rounded-xl shadow-2xl">
+            <h2 class="text-4xl font-bold text-white mb-8 text-center">Education</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-gray-700 p-6 rounded-xl shadow-lg card">
+                    <h3 class="text-2xl font-semibold text-blue-300 mb-2">Indian Institute of Management Sambalpur</h3>
+                    <p class="text-lg text-gray-200">Master of Business Administration - MBA</p>
+                    <p class="text-md text-gray-400">Business Administration and Management, General</p>
+                    <p class="text-md text-gray-400">July 2023 - April 2025</p>
+                </div>
+                <div class="bg-gray-700 p-6 rounded-xl shadow-lg card">
+                    <h3 class="text-2xl font-semibold text-blue-300 mb-2">Shri Mata Vaishno Devi University</h3>
+                    <p class="text-lg text-gray-200">Bachelor of Technology</p>
+                    <p class="text-md text-gray-400">Mechanical Engineering</p>
+                    <p class="text-md text-gray-400">2016-2020</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Intersection Observer for section transitions
+        const sections = document.querySelectorAll('.section-transition');
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.2
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    // For skill bars, trigger animation when visible
+                    if (entry.target.id === 'about') {
+                        document.querySelectorAll('.skill-bar-inner').forEach(bar => {
+                            bar.classList.add('is-visible');
+                        });
+                    }
+                } else {
+                    entry.target.classList.remove('is-visible');
+                    // Optional: reset skill bars if section scrolls out
+                    if (entry.target.id === 'about') {
+                        document.querySelectorAll('.skill-bar-inner').forEach(bar => {
+                            bar.classList.remove('is-visible');
+                        });
+                    }
+                }
+            });
+        }, observerOptions);
+
+        sections.forEach(section => {
+            observer.observe(section);
+        });
+
+        // Particle Background Generation
+        const particleContainer = document.querySelector('.particle-container');
+        const numParticles = 50;
+
+        for (let i = 0; i < numParticles; i++) {
+            const particle = document.createElement('div');
+            particle.classList.add('particle');
+            const size = Math.random() * 10 + 5; // Size between 5px and 15px
+            particle.style.width = `${size}px`;
+            particle.style.height = `${size}px`;
+            particle.style.left = `${Math.random() * 100}%`;
+            particle.style.top = `${Math.random() * 100}%`;
+            particle.style.animationDuration = `${Math.random() * 10 + 10}s`; // Duration between 10s and 20s
+            particle.style.animationDelay = `${Math.random() * 5}s`; // Delay up to 5s
+            particleContainer.appendChild(particle);
+        }
+
+        // Contact Modal Logic
+        const contactBtn = document.getElementById('contactBtn');
+        const contactModal = document.getElementById('contactModal');
+
+        contactBtn.addEventListener('click', () => {
+            contactModal.classList.remove('hidden');
+        });
+
+        function closeModal() {
+            contactModal.classList.add('hidden');
+        }
+
+        // Close modal if clicked outside content
+        window.addEventListener('click', (event) => {
+            if (event.target == contactModal) {
+                closeModal();
+            }
+        });
+
+        // Ensure particles are visible on hero section load
+        window.addEventListener('load', () => {
+            document.querySelector('.hero-title').style.opacity = 1;
+            document.querySelector('.hero-title').style.transform = 'scale(1)';
+            document.querySelector('.hero-subtitle').style.opacity = 1;
+            document.querySelector('.hero-subtitle').style.transform = 'translateY(0)';
+        });
+
+    </script>
+</body>
+</html>
