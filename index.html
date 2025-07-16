@@ -211,7 +211,7 @@
 
         /* Modal Styles */
         .modal {
-            display: none; /* Hidden by default */
+            /* display: none; Removed this as it was conflicting with Tailwind's hidden class */
             position: fixed; /* Stay in place */
             z-index: 1000; /* Sit on top */
             left: 0;
@@ -220,7 +220,7 @@
             height: 100%; /* Full height */
             overflow: auto; /* Enable scroll if needed */
             background-color: rgba(0,0,0,0.7); /* Black w/ opacity */
-            display: flex;
+            /* display: flex; Removed this as it was conflicting with Tailwind's hidden class */
             align-items: center;
             justify-content: center;
         }
@@ -527,11 +527,15 @@
         const contactModal = document.getElementById('contactModal');
 
         contactBtn.addEventListener('click', () => {
+            // When opening the modal, ensure it's displayed as flex for centering
+            contactModal.style.display = 'flex';
             contactModal.classList.remove('hidden');
         });
 
         function closeModal() {
             contactModal.classList.add('hidden');
+            // After hiding, set display to none to prevent it from taking up space
+            contactModal.style.display = 'none';
         }
 
         // Close modal if clicked outside content
